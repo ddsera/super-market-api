@@ -48,4 +48,18 @@ router.post("/image", (req, res) => {
   });
 });
 
+// GET route to serve an image by filename
+router.get("/image/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, "..", "uploads", filename);
+
+  // Check if file exists
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(404).json({ message: "Image not found" });
+    }
+    res.sendFile(filePath);
+  });
+});
+
 module.exports = router;
