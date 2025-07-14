@@ -1,4 +1,5 @@
 const { MongoClient, ObjectId } = require("mongodb");
+const { verifyToken } = require("../middleware/authMiddleware");
 // or as an es module:
 // import { MongoClient } from 'mongodb'
 

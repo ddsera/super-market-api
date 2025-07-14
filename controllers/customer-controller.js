@@ -1,4 +1,5 @@
 const { MongoClient, ObjectId } = require("mongodb");
+const { verifyToken } = require("../middleware/authMiddleware");
 // or as an es module:
 // import { MongoClient } from 'mongodb'
 
@@ -23,6 +24,8 @@ const deleteCustomer = async (req, res) => {
   });
   res.send(deleteResult);
 };
+
+
 const updateCustomer = async (req, res) => {
   const updateResult = await collection.updateOne(
     { _id: new ObjectId(req.params.id) },
