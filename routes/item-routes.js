@@ -3,6 +3,7 @@ const router = express.Router();
 const { verifyToken } = require("../middleware/authMiddleware");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 const {
   saveItem,
@@ -29,5 +30,16 @@ router.get("/get", verifyToken, getAllItems);
 router.get("/get/:id", verifyToken, getItemById);
 router.put("/update/:id", verifyToken, updateItem);
 router.delete("/delete/:id", deleteItem);
+router.get("/image/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, "..", "uploads", filename);
+
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      return res.status(404).json({ message: "Image not found" });
+    }
+    res.sendFile(filePath);
+  });
+});
 
 module.exports = router;
