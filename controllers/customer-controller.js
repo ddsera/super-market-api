@@ -11,7 +11,13 @@ const db = client.db("super-market");
 const collection = db.collection("customer");
 
 const saveCustomer = async (req, res) => {
-  const insertResult = await collection.insertOne(req.body);
+  // Combine form fields and image filename
+  const customerData = {
+    ...req.body,
+    image: req.file ? req.file.filename : null,
+  };
+
+  const insertResult = await collection.insertOne(customerData);
   res.send(insertResult);
 };
 const getAllCustomers = async (req, res) => {
@@ -24,7 +30,6 @@ const deleteCustomer = async (req, res) => {
   });
   res.send(deleteResult);
 };
-
 
 const updateCustomer = async (req, res) => {
   const updateResult = await collection.updateOne(
