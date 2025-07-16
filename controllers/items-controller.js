@@ -11,7 +11,16 @@ const db = client.db("super-market");
 const collection = db.collection("items");
 
 const saveItem = async (req, res) => {
-  const insertResult = await collection.insertOne(req.body);
+  // Combine form fields and image filename
+  const itemData = {
+    ...req.body,
+    image: req.file ? req.file.filename : null,
+  };
+
+  // Optionally, convert numeric fields (like price) to numbers
+  if (itemData.price) itemData.price = Number(itemData.price);
+
+  const insertResult = await collection.insertOne(itemData);
   res.send(insertResult);
 };
 const getAllItems = async (req, res) => {

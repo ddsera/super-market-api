@@ -28,6 +28,8 @@ const upload = multer({ storage: storage });
 
 // 3. POST route with error handling
 router.post("/image", (req, res) => {
+  console.log("hiiiiiiiii");
+
   upload.single("image")(req, res, function (err) {
     if (err instanceof multer.MulterError) {
       return res
