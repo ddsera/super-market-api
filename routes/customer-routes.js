@@ -11,6 +11,7 @@ const {
   updateCustomer,
   deleteCustomer,
   getCustomerById,
+  updateCustomerImage,
 } = require("../controllers/customer-controller");
 
 // Set up multer storage for customer images
@@ -33,6 +34,14 @@ router.get("/get", verifyToken, getAllCustomers);
 router.get("/get/:id", verifyToken, getCustomerById);
 router.put("/update/:id", verifyToken, updateCustomer);
 router.delete("/delete/:id", verifyToken, deleteCustomer);
+
+// Update customer image
+router.put(
+  "/updateImage/:id",
+  verifyToken,
+  upload.single("image"),
+  updateCustomerImage
+);
 
 // Serve customer images
 router.get("/image/:filename", (req, res) => {

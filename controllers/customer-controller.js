@@ -1,5 +1,7 @@
 const { MongoClient, ObjectId } = require("mongodb");
 const { verifyToken } = require("../middleware/authMiddleware");
+const path = require("path");
+const fs = require("fs");
 // or as an es module:
 // import { MongoClient } from 'mongodb'
 
@@ -45,10 +47,37 @@ const getCustomerById = async (req, res) => {
   res.send(filteredDocs);
 };
 
+const updateCustomerImage = async (req, res) => {
+  const { id } = req.params;
+  const image = req.file ? req.file.filename : null;
+  if (!image) {
+    return res.status(400).json({ message: "No image uploaded" });
+  }
+
+  const customer = await collection.findOne({ _id: new ObjectId(id) });
+
+  // Update the image field in MongoDB
+  const updateResult = await collection.updateOne(
+    { _id: new ObjectId(id) },
+    { $set: { image } }
+  );
+
+  // Delete the old image file if it exists and is not null
+  if (customer && customer.image) {
+    const oldImagePath = path.join(__dirname, "..", "uploads", customer.image);
+    fs.unlink(oldImagePath, (err) => {
+      // Ignore error if file doesn't exist
+    });
+  }
+
+  res.json({ message: "Image updated", updateResult, image });
+};
+
 module.exports = {
   saveCustomer,
   getAllCustomers,
   deleteCustomer,
   updateCustomer,
   getCustomerById,
+  updateCustomerImage,
 };
