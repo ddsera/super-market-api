@@ -1,13 +1,17 @@
-const { MongoClient, ObjectId } = require("mongodb");
-// or as an es module:
-// import { MongoClient } from 'mongodb'
+const { ObjectId } = require("mongodb");
+const connectDB = require("../middleware/database");
 
-// Connection URL
-const url = "mongodb://127.0.0.1:27017";
-const client = new MongoClient(url);
+let collection;
 
-const db = client.db("super-market");
-const collection = db.collection("items");
+// Connect to the database and get the collection
+connectDB()
+  .then((db) => {
+    collection = db.collection("items");
+  })
+  .catch((err) => {
+    console.error("Failed to connect to the database:", err);
+    process.exit(1);
+  });
 
 const saveItem = async (req, res) => {
   // Combine form fields and image filename
