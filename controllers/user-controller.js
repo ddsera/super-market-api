@@ -1,12 +1,19 @@
-const { MongoClient, ObjectId } = require("mongodb");
+const { ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const connectDB = require("../middleware/database");
 
-const url = "mongodb://127.0.0.1:27017";
-const client = new MongoClient(url);
+let collection;
 
-const db = client.db("super-market");
-const collection = db.collection("users");
+// Connect to the database and get the collection
+connectDB()
+  .then((db) => {
+    collection = db.collection("users");
+  })
+  .catch((err) => {
+    console.error("Failed to connect to the database:", err);
+    process.exit(1);
+  });
 
 // JWT Secret - in production, this should be in environment variables
 const JWT_SECRET = "marketApi";
